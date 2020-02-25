@@ -1,0 +1,10 @@
+@import '~antd/dist/antd.css';
+
+.App {
+  margin-top: 120px;
+  word-wrap: break-word;
+}
+
+.Title {
+  font-size: 48px;
+}
