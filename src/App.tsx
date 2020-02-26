@@ -6,11 +6,12 @@ import { Typography } from 'antd'
 
 import firebase from './firebase'
 
-import ListItem from './components/listItem/ListItem'
-
 import './App.css';
 
-const { Title, Text } = Typography
+import ListItem from './components/listItem/ListItem'
+
+
+const { Title } = Typography
 const db = firebase.firestore()
 var itemsRef = db.collection('items') // Accesses Firestore's items collection
 
@@ -55,14 +56,14 @@ class App extends React.Component<{}, myState> {
     return (
       <div className="App">
         <Fragment>
-          <Row type="flex" justify="center" align="middle" gutter={[8, 56]}>
+          <Row type="flex" justify="center" align="middle" gutter={[24, 56]}>
             <Col span = {12}>
               <Typography>
                 <Title className="Title">to do list</Title>
               </Typography>
             </Col>
           </Row>
-          <Row type="flex" justify="center" align="middle" gutter={[8, 56]}>
+          <Row type="flex" justify="center" align="middle" gutter={[24, 56]}>
             <Col span = {9}>
               <Input 
               placeholder="Enter things to do..." 
@@ -77,10 +78,13 @@ class App extends React.Component<{}, myState> {
             </Col>
           </Row>
           {this.state.items?.map((item:any) =>
-            <Row type="flex" justify="center" align="middle" gutter={[8, 56]}>
-              <Col span = {12}>
+            <Row type="flex" justify="center" align="middle" gutter={[24, 56]}>
+              <Col span={9}>
                 <ListItem
                  item={item} />
+              </Col>
+              <Col span={3}>
+                <Button>Remove</Button>
               </Col>
             </Row>
           )}

@@ -2,6 +2,7 @@ import * as firebase from 'firebase'
 // import firestore from firebase/firestore
 
 const firebaseConfig = {
+    /* Fill using your own API key from Firebase */
     apiKey: "AIzaSyAdc2gAF0D2ksJb1eLcbrtLgaRnw9khXFM",
     authDomain: "to-do-list-881a6.firebaseapp.com",
     databaseURL: "https://to-do-list-881a6.firebaseio.com",
