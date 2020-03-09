@@ -16,24 +16,35 @@ const db = firebase.firestore()
 var itemsRef = db.collection('items') // Accesses Firestore's items collection
 
 interface myState {
-  items: any[] | null
+  items: any[] | null,
+  toDoListItem: string | null,
 }
 
 class App extends React.Component<{}, myState> {
   constructor(props: any) {
     super(props)
-    this.onUpdateList = this.onUpdateList.bind(this)
+    this.performBindings()
     this.state = {
       items: [],
+      toDoListItem: null,
     }
   }
 
+  /* Bind event handler functions so they can be called. */
+  performBindings = () =>  {
+    this.onUpdateList = this.onUpdateList.bind(this)
+    this.onAdd = this.onAdd.bind(this)
+    this.handleToDoListFieldChanged = this.handleToDoListFieldChanged.bind(this)
+    this.onRemove = this.onRemove.bind(this)
+  }
+
+  /* Fetches data from Firestore */
   onUpdateList = () => {
     const currentState = this
-    var adminDoc = itemsRef.doc('admin')
+    var userDoc = itemsRef.doc('admin') // Replace admin with fetch user later.
     var retrievedItems:any[] = []
 
-    adminDoc.get().then(function(doc) {
+    userDoc.get().then(function(doc) {
       if (doc.exists) {
         retrievedItems = doc.data()?.items
       } else {
@@ -48,8 +59,70 @@ class App extends React.Component<{}, myState> {
     })
   }
 
+  /* Handles input changed on add input. */
+  handleToDoListFieldChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      toDoListItem: e.target.value
+    })
+  }
+
+  /* Adds data to Firestore and current view. Only adds to current view if successfully added to Firestore. */
+  onAdd = () => {
+    const currentState = this
+    var userDoc = itemsRef.doc('admin') // Replace admin with fetch user later.
+    var itemsUpdated:any[] = []
+
+    /* Error checking if item exists */
+    if(this.state.items) {
+      itemsUpdated = this.state.items
+
+      if(this.state.toDoListItem){
+        itemsUpdated.push(this.state.toDoListItem)
+
+        /* Sets new data to Firestore */
+        userDoc.set({
+          items: itemsUpdated
+        }).then(function() {
+          currentState.setState({
+            items: itemsUpdated,
+          })
+
+          console.log("Document successfully written")
+        }).catch(function(error) {
+          console.log("Error writing document: ", error)
+        })
+      }
+    }    
+  }
+
+  onRemove = (index: any) => {
+    const currentState = this
+    var userDoc = itemsRef.doc('admin') // Replace admin with fetch user later.
+    var itemsUpdated:any[] = []
+
+    /* Error checking if item exists */
+    if(this.state.items) {
+      itemsUpdated = this.state.items
+
+      /* Sets new data to Firestore */
+      userDoc.update({
+        items: firebase.firestore.FieldValue.arrayRemove(itemsUpdated[index])
+      }).then(function() {
+        delete itemsUpdated[index]
+        
+        currentState.setState({
+          items: itemsUpdated,
+        })
+
+        console.log("Document successfully written")
+      }).catch(function(error) {
+        console.log("Error writing document: ", error)
+      })
+    }   
+  }
+
   componentDidMount() {
-    this.onUpdateList()
+    this.onUpdateList();
   }
 
   render() {
@@ -59,7 +132,7 @@ class App extends React.Component<{}, myState> {
           <Row type="flex" justify="center" align="middle" gutter={[24, 56]}>
             <Col span = {12}>
               <Typography>
-                <Title className="Title">to do list</Title>
+                <Title className="Title">to do list.</Title>
               </Typography>
             </Col>
           </Row>
@@ -68,23 +141,26 @@ class App extends React.Component<{}, myState> {
               <Input 
               placeholder="Enter things to do..." 
               size="large" 
+              onChange={this.handleToDoListFieldChanged}
               />
             </Col>
             <Col span = {3}>
               <Button 
               type="primary" 
               size="large"
+              onClick={this.onAdd}
               >Add</Button>
             </Col>
           </Row>
-          {this.state.items?.map((item:any) =>
+          {this.state.items?.map((item:any, index) =>
             <Row type="flex" justify="center" align="middle" gutter={[24, 56]}>
               <Col span={9}>
                 <ListItem
                  item={item} />
               </Col>
               <Col span={3}>
-                <Button>Remove</Button>
+                <Button
+                onClick={() => this.onRemove(index)}>Remove</Button>
               </Col>
             </Row>
           )}

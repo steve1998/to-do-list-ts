@@ -1,5 +1,14 @@
 import * as firebase from 'firebase'
-// import firestore from firebase/firestore
+
+/*
+Format of Firestore collection
+{
+    "items": {
+        "user": items["to_do_1", "to_do_4"],
+        "user2": items["to_do_3", "to_do_4"],
+    }
+}
+*/
 
 const firebaseConfig = {
     /* Fill using your own API key from Firebase */
