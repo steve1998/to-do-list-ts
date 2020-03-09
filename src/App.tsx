@@ -17,7 +17,7 @@ var itemsRef = db.collection('items') // Accesses Firestore's items collection
 
 interface myState {
   items: any[] | null,
-  toDoListItem: string | null,
+  toDoListItem: string | undefined,
 }
 
 class App extends React.Component<{}, myState> {
@@ -26,7 +26,7 @@ class App extends React.Component<{}, myState> {
     this.performBindings()
     this.state = {
       items: [],
-      toDoListItem: null,
+      toDoListItem: undefined,
     }
   }
 
@@ -36,6 +36,12 @@ class App extends React.Component<{}, myState> {
     this.onAdd = this.onAdd.bind(this)
     this.handleToDoListFieldChanged = this.handleToDoListFieldChanged.bind(this)
     this.onRemove = this.onRemove.bind(this)
+  }
+
+  clearInputField = () => {
+    this.setState({
+      toDoListItem: undefined
+    })
   }
 
   /* Fetches data from Firestore */
@@ -73,11 +79,12 @@ class App extends React.Component<{}, myState> {
     var itemsUpdated:any[] = []
 
     /* Error checking if item exists */
-    if(this.state.items) {
+    if(this.state.items && this.state.toDoListItem != undefined) {
       itemsUpdated = this.state.items
 
       if(this.state.toDoListItem){
         itemsUpdated.push(this.state.toDoListItem)
+        this.clearInputField()
 
         /* Sets new data to Firestore */
         userDoc.set({
@@ -103,13 +110,14 @@ class App extends React.Component<{}, myState> {
     /* Error checking if item exists */
     if(this.state.items) {
       itemsUpdated = this.state.items
+      this.clearInputField()
 
       /* Sets new data to Firestore */
       userDoc.update({
         items: firebase.firestore.FieldValue.arrayRemove(itemsUpdated[index])
       }).then(function() {
         delete itemsUpdated[index]
-        
+
         currentState.setState({
           items: itemsUpdated,
         })
@@ -140,7 +148,8 @@ class App extends React.Component<{}, myState> {
             <Col span = {9}>
               <Input 
               placeholder="Enter things to do..." 
-              size="large" 
+              size="large"
+              value={this.state.toDoListItem}
               onChange={this.handleToDoListFieldChanged}
               />
             </Col>
