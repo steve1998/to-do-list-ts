@@ -3,5 +3,5 @@ Simple to do list made with React and Typescript using create-react-app and Ant.
 
 The web app is deployed using Heroku at https://to-do-list-pwa.herokuapp.com.
 
-Backend and database is handled by Firebase and uses Cloud Firstore as the database.
+Backend and database is handled by Firebase and uses Cloud Firestore as the database.
 
