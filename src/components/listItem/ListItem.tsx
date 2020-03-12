@@ -1,8 +1,5 @@
-import React, { useState, Fragment } from 'react'
-
-import { Button, Input } from 'antd'
+import React from 'react'
 import { Typography } from 'antd'
-import { Col } from 'antd'
 
 const { Text } = Typography
 
