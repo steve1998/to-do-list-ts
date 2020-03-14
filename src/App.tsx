@@ -165,7 +165,7 @@ class App extends React.Component<{}, myState> {
             <Row type="flex" justify="center" align="middle" gutter={[24, 56]}>
               <Col span={9}>
                 <ListItem
-                 item={item} />
+                item={item} />
               </Col>
               <Col span={3}>
                 <Button
